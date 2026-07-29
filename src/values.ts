@@ -47,8 +47,7 @@ export function currentHumidity(
 ): number | undefined {
   return (
     numericState(humiditySensor) ??
-    numericAttribute(climate, "current_humidity") ??
-    numericAttribute(climate, "humidity")
+    numericAttribute(climate, "current_humidity")
   );
 }
 

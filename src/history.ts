@@ -102,9 +102,7 @@ export async function fetchClimateHistory(
         timestamp,
         humidityEntityId
           ? (state) => numericState(state)
-          : (state) =>
-              numericAttribute(state, "current_humidity") ??
-              numericAttribute(state, "humidity")
+          : (state) => numericAttribute(state, "current_humidity")
       )
     };
   });

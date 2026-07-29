@@ -38,6 +38,11 @@ describe("climate and air values", () => {
     expect(currentHumidity(state, sensor)).toBe(58);
   });
 
+  it("does not treat a target humidity attribute as a current reading", () => {
+    const state = climate({ humidity: 63 });
+    expect(currentHumidity(state)).toBeUndefined();
+  });
+
   it("formats numeric and text sensors", () => {
     expect(
       formatEntityValue({

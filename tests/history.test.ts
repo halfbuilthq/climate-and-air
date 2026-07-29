@@ -42,4 +42,33 @@ describe("climate history", () => {
     expect(points[12].humidity).toBeCloseTo(68);
     expect(points.at(-1)).toMatchObject({ temperature: 23, humidity: 60 });
   });
+
+  it("ignores target humidity when no current humidity source exists", async () => {
+    const now = new Date("2026-07-28T06:00:00.000Z");
+    const climate: HassEntity = {
+      entity_id: "climate.room",
+      state: "cool",
+      last_changed: now.toISOString(),
+      attributes: {
+        current_temperature: 23,
+        humidity: 63
+      }
+    };
+    const hass = {
+      states: {},
+      async callApi<T>() {
+        return [[climate]] as T;
+      },
+      async callService() {}
+    } as HomeAssistant;
+
+    const points = await fetchClimateHistory(
+      hass,
+      "climate.room",
+      undefined,
+      6,
+      now
+    );
+    expect(points.every((point) => point.humidity === undefined)).toBe(true);
+  });
 });

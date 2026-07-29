@@ -32,7 +32,7 @@ describe("climate air card config", () => {
     });
   });
 
-  it("finds likely climate and air quality entities for the preview", () => {
+  it("only selects a climate entity for the preview", () => {
     const hass = {
       states: {
         "climate.family_room": {
@@ -67,12 +67,12 @@ describe("climate air card config", () => {
       async callService() {}
     } as HomeAssistant;
 
-    expect(getStubConfig(hass)).toMatchObject({
+    expect(getStubConfig(hass)).toEqual({
+      type: "custom:climate-air-card",
       entity: "climate.family_room",
-      humidity_entity: "sensor.family_room_humidity",
-      co2_entity: "sensor.family_room_co2",
-      pm25_entity: "sensor.family_room_pm25",
-      voc_entity: "sensor.family_room_voc"
+      title: "",
+      history_hours: 6,
+      show_history: true
     });
   });
 

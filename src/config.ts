@@ -1,4 +1,4 @@
-import type { ClimateAirCardConfig, HassEntity, HomeAssistant } from "./types";
+import type { ClimateAirCardConfig, HomeAssistant } from "./types";
 
 export const DEFAULT_CONFIG: Partial<ClimateAirCardConfig> = {
   title: "",
@@ -123,51 +123,12 @@ export function normalizeConfig(config: ClimateAirCardConfig): ClimateAirCardCon
   } as ClimateAirCardConfig;
 }
 
-function findEntity(
-  states: HassEntity[],
-  predicate: (state: HassEntity, searchText: string) => boolean
-): string | undefined {
-  const match = states.find((state) => {
-    const searchText =
-      `${state.entity_id} ${state.attributes.friendly_name ?? ""}`.toLowerCase();
-    return predicate(state, searchText);
-  });
-  return match?.entity_id;
-}
-
 export function getStubConfig(hass?: HomeAssistant): ClimateAirCardConfig {
   const states = Object.values(hass?.states ?? {});
   const climate = states.find((state) => state.entity_id.startsWith("climate."));
-  const humidity = findEntity(
-    states,
-    (state, text) =>
-      state.attributes.device_class === "humidity" || text.includes("humidity")
-  );
-  const co2 = findEntity(
-    states,
-    (state, text) =>
-      state.attributes.device_class === "carbon_dioxide" ||
-      text.includes("co2") ||
-      text.includes("carbon dioxide")
-  );
-  const pm25 = findEntity(
-    states,
-    (state, text) =>
-      state.attributes.device_class === "pm25" ||
-      text.includes("pm2.5") ||
-      text.includes("pm25")
-  );
-  const voc = findEntity(
-    states,
-    (_state, text) => text.includes("voc") || text.includes("volatile organic")
-  );
 
   return normalizeConfig({
     type: "custom:climate-air-card",
-    entity: climate?.entity_id ?? "",
-    humidity_entity: humidity,
-    co2_entity: co2,
-    pm25_entity: pm25,
-    voc_entity: voc
+    entity: climate?.entity_id ?? ""
   });
 }

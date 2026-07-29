@@ -169,7 +169,12 @@ export class ClimateAirCard extends LitElement {
   }
 
   getCardSize(): number {
-    return this._config?.show_history === false ? 7 : 11;
+    const config = this._config;
+    if (!config) return 7;
+    const hasAirQuality = Boolean(
+      config.co2_entity || config.pm25_entity || config.voc_entity
+    );
+    return (config.show_history === false ? 5 : 9) + (hasAirQuality ? 2 : 0);
   }
 
   getGridOptions() {
@@ -322,13 +327,19 @@ export class ClimateAirCard extends LitElement {
           : clamp(current + (event.key === "ArrowLeft" ? -1 : 1), 0, pointCount - 1);
   }
 
-  private _renderChart(points: HistoryPoint[], unit: string) {
+  private _renderChart(
+    points: HistoryPoint[],
+    unit: string,
+    showHumidity: boolean
+  ) {
     const temperatures = points
       .map((point) => point.temperature)
       .filter((value): value is number => value !== undefined);
-    const humidities = points
-      .map((point) => point.humidity)
-      .filter((value): value is number => value !== undefined);
+    const humidities = showHumidity
+      ? points
+          .map((point) => point.humidity)
+          .filter((value): value is number => value !== undefined)
+      : [];
     const temperatureMinimum =
       temperatures.length > 0 ? Math.floor(Math.min(...temperatures) - 1) : 18;
     const temperatureMaximum =
@@ -356,16 +367,19 @@ export class ClimateAirCard extends LitElement {
             ] as [number, number])
       )
       .filter((point): point is [number, number] => point !== undefined);
-    const humidityCoordinates = points
-      .map((point, index) =>
-        point.humidity === undefined
-          ? undefined
-          : ([
-              xFor(index),
-              ((humidityMaximum - point.humidity) / humidityRange) * CHART_HEIGHT
-            ] as [number, number])
-      )
-      .filter((point): point is [number, number] => point !== undefined);
+    const humidityCoordinates = showHumidity
+      ? points
+          .map((point, index) =>
+            point.humidity === undefined
+              ? undefined
+              : ([
+                  xFor(index),
+                  ((humidityMaximum - point.humidity) / humidityRange) *
+                    CHART_HEIGHT
+                ] as [number, number])
+          )
+          .filter((point): point is [number, number] => point !== undefined)
+      : [];
     const activeIndex =
       this._activeChartIndex === undefined
         ? undefined
@@ -386,7 +400,7 @@ export class ClimateAirCard extends LitElement {
         : ((temperatureMaximum - activePoint.temperature) / temperatureRange) *
           CHART_HEIGHT;
     const activeHumidityY =
-      activePoint?.humidity === undefined
+      !showHumidity || activePoint?.humidity === undefined
         ? undefined
         : ((humidityMaximum - activePoint.humidity) / humidityRange) * CHART_HEIGHT;
     const tooltipPlacement =
@@ -405,7 +419,7 @@ export class ClimateAirCard extends LitElement {
       : "";
 
     return html`
-      <div class="chart-layout">
+      <div class="chart-layout ${showHumidity ? "" : "temperature-only"}">
         <div class="y-axis temperature-axis" aria-hidden="true">
           <span>${temperatureMaximum}${unit}</span>
           <span>${Math.round(temperatureMinimum + temperatureRange / 2)}${unit}</span>
@@ -415,7 +429,9 @@ export class ClimateAirCard extends LitElement {
           class="chart-wrap"
           role="group"
           tabindex="0"
-          aria-label="Inspect temperature and humidity history"
+          aria-label=${showHumidity
+            ? "Inspect temperature and humidity history"
+            : "Inspect temperature history"}
           @pointerdown=${(event: PointerEvent) => this._inspectChart(event, points.length)}
           @pointermove=${(event: PointerEvent) => this._inspectChart(event, points.length)}
           @pointerleave=${this._leaveChart}
@@ -428,7 +444,9 @@ export class ClimateAirCard extends LitElement {
           <svg
             viewBox="0 0 ${CHART_WIDTH} ${CHART_HEIGHT}"
             role="img"
-            aria-label="Temperature and humidity history"
+            aria-label=${showHumidity
+              ? "Temperature and humidity history"
+              : "Temperature history"}
             preserveAspectRatio="none"
           >
             ${[0, 1, 2].map((index) => {
@@ -440,13 +458,18 @@ export class ClimateAirCard extends LitElement {
               return svg`<line class="grid-line" x1=${x} y1="0" x2=${x} y2=${CHART_HEIGHT}></line>`;
             })}
             <path class="temperature-line" d=${smoothPath(temperatureCoordinates)}></path>
-            <path class="humidity-line" d=${smoothPath(humidityCoordinates)}></path>
+            ${showHumidity
+              ? svg`<path class="humidity-line" d=${smoothPath(humidityCoordinates)}></path>`
+              : nothing}
             ${temperatureCoordinates.map(
               ([x, y]) => svg`<circle class="temperature-dot" cx=${x} cy=${y} r="3"></circle>`
             )}
-            ${humidityCoordinates.map(
-              ([x, y]) => svg`<circle class="humidity-dot" cx=${x} cy=${y} r="3"></circle>`
-            )}
+            ${showHumidity
+              ? humidityCoordinates.map(
+                  ([x, y]) =>
+                    svg`<circle class="humidity-dot" cx=${x} cy=${y} r="3"></circle>`
+                )
+              : nothing}
             ${activeX === undefined
               ? nothing
               : svg`
@@ -495,23 +518,31 @@ export class ClimateAirCard extends LitElement {
                         : `${formatNumber(activePoint.temperature, this._locale, 1)}${unit}`}
                     </strong>
                   </div>
-                  <div class="tooltip-item humidity-series">
-                    <span><i></i>Humidity</span>
-                    <strong>
-                      ${activePoint.humidity === undefined
-                        ? "—"
-                        : `${formatNumber(activePoint.humidity, this._locale)}%`}
-                    </strong>
-                  </div>
+                  ${showHumidity
+                    ? html`
+                        <div class="tooltip-item humidity-series">
+                          <span><i></i>Humidity</span>
+                          <strong>
+                            ${activePoint.humidity === undefined
+                              ? "—"
+                              : `${formatNumber(activePoint.humidity, this._locale)}%`}
+                          </strong>
+                        </div>
+                      `
+                    : nothing}
                 </div>
               `
             : nothing}
         </div>
-        <div class="y-axis humidity-axis" aria-hidden="true">
-          <span>${humidityMaximum}%</span>
-          <span>${Math.round(humidityMinimum + humidityRange / 2)}%</span>
-          <span>${humidityMinimum}%</span>
-        </div>
+        ${showHumidity
+          ? html`
+              <div class="y-axis humidity-axis" aria-hidden="true">
+                <span>${humidityMaximum}%</span>
+                <span>${Math.round(humidityMinimum + humidityRange / 2)}%</span>
+                <span>${humidityMinimum}%</span>
+              </div>
+            `
+          : nothing}
       </div>
     `;
   }
@@ -520,7 +551,7 @@ export class ClimateAirCard extends LitElement {
     type: "co2" | "pm25" | "voc",
     label: string,
     sensor: HassEntity | undefined,
-    entityId: string | undefined,
+    entityId: string,
     iconPath: string,
     fallbackUnit: string
   ) {
@@ -529,9 +560,8 @@ export class ClimateAirCard extends LitElement {
       <button
         class="sensor"
         type="button"
-        ?disabled=${!entityId}
         @click=${() => this._openMoreInfo(entityId)}
-        aria-label=${entityId ? `Open ${label} details` : `${label} entity not configured`}
+        aria-label=${`Open ${label} details`}
       >
         <span class="sensor-icon ${quality}" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d=${iconPath}></path></svg>
@@ -539,7 +569,7 @@ export class ClimateAirCard extends LitElement {
         <span class="sensor-copy">
           <span class="sensor-label">${label}</span>
           <strong class="${type} ${quality}">
-            ${entityId ? formatEntityValue(sensor, this._locale, fallbackUnit) : "Not set"}
+            ${formatEntityValue(sensor, this._locale, fallbackUnit)}
           </strong>
         </span>
       </button>
@@ -562,7 +592,11 @@ export class ClimateAirCard extends LitElement {
     const current = currentTemperature(climate);
     const target = targetTemperature(climate);
     const humidity = currentHumidity(climate, humiditySensor);
+    const hasHumidity =
+      Boolean(config.humidity_entity) ||
+      typeof climate?.attributes.current_humidity === "number";
     const humidityProgress = clamp(humidity ?? 0, 0, 100);
+    const humidityEntityId = config.humidity_entity || config.entity;
     const unit = temperatureUnit(this.hass, climate);
     const title =
       config.title ||
@@ -576,6 +610,14 @@ export class ClimateAirCard extends LitElement {
         ? climate.attributes.fan_mode
         : "";
     const fanModes = optionList(climate?.attributes.fan_modes);
+    const hasFanControl = fanModes.length > 0 || fanMode.length > 0;
+    const hasTargetControl = target !== undefined;
+    const configuredSensorCount = [
+      config.co2_entity,
+      config.pm25_entity,
+      config.voc_entity
+    ].filter(Boolean).length;
+    const hasAirReadings = hasHumidity || configuredSensorCount > 0;
     const hours = clamp(config.history_hours ?? 6, 1, 24);
     const history =
       this._history.some(
@@ -612,7 +654,9 @@ export class ClimateAirCard extends LitElement {
               </span>
               <span class="title-copy">
                 <h1>${title}</h1>
-                <span class="subtitle">Comfort & air</span>
+                <span class="subtitle">
+                  ${hasAirReadings ? "Comfort & air" : "Climate control"}
+                </span>
               </span>
             </button>
             <div class="status ${status.className}">
@@ -621,8 +665,8 @@ export class ClimateAirCard extends LitElement {
             </div>
           </header>
 
-          <section class="hero">
-            <div class="thermostat">
+          <section class="hero ${hasHumidity ? "" : "temperature-only"}">
+            <div class="thermostat ${hasTargetControl ? "" : "no-target"}">
               <div class="current-block">
                 <span class="eyebrow">Current</span>
                 <strong class="current-temperature">
@@ -631,35 +675,39 @@ export class ClimateAirCard extends LitElement {
                 </strong>
               </div>
 
-              <div class="target-block">
-                <span class="eyebrow">Target</span>
-                <div class="target-controls">
-                  <button
-                    type="button"
-                    class="temperature-button"
-                    ?disabled=${target === undefined || this._controlPending}
-                    @click=${() => this._adjustTemperature(-1)}
-                    aria-label="Lower target temperature"
-                  >
-                    <svg viewBox="0 0 24 24"><path d=${mdiMinus}></path></svg>
-                  </button>
-                  <strong class="target-temperature">
-                    <span>${target === undefined ? "—" : formatNumber(target, this._locale, 1)}</span>
-                    ${target === undefined ? nothing : html`<small>${unit}</small>`}
-                  </strong>
-                  <button
-                    type="button"
-                    class="temperature-button"
-                    ?disabled=${target === undefined || this._controlPending}
-                    @click=${() => this._adjustTemperature(1)}
-                    aria-label="Raise target temperature"
-                  >
-                    <svg viewBox="0 0 24 24"><path d=${mdiPlus}></path></svg>
-                  </button>
-                </div>
-              </div>
+              ${hasTargetControl
+                ? html`
+                    <div class="target-block">
+                      <span class="eyebrow">Target</span>
+                      <div class="target-controls">
+                        <button
+                          type="button"
+                          class="temperature-button"
+                          ?disabled=${this._controlPending}
+                          @click=${() => this._adjustTemperature(-1)}
+                          aria-label="Lower target temperature"
+                        >
+                          <svg viewBox="0 0 24 24"><path d=${mdiMinus}></path></svg>
+                        </button>
+                        <strong class="target-temperature">
+                          <span>${formatNumber(target, this._locale, 1)}</span>
+                          <small>${unit}</small>
+                        </strong>
+                        <button
+                          type="button"
+                          class="temperature-button"
+                          ?disabled=${this._controlPending}
+                          @click=${() => this._adjustTemperature(1)}
+                          aria-label="Raise target temperature"
+                        >
+                          <svg viewBox="0 0 24 24"><path d=${mdiPlus}></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  `
+                : nothing}
 
-              <div class="climate-options">
+              <div class="climate-options ${hasFanControl ? "" : "single"}">
                 <label class="option">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d=${mdiWaterPercent}></path>
@@ -682,52 +730,62 @@ export class ClimateAirCard extends LitElement {
                     </select>
                   </span>
                 </label>
-                <label class="option">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d=${mdiFan}></path>
-                  </svg>
-                  <span>
-                    <small>Fan</small>
-                    <select
-                      aria-label="Fan mode"
-                      ?disabled=${fanModes.length === 0 || this._controlPending}
-                      @change=${this._changeFan}
-                    >
-                      ${fanModes.length > 0
-                        ? fanModes.map(
-                            (item) =>
-                              html`<option value=${item} ?selected=${item === fanMode}>
-                                ${labelForOption(item)}
-                              </option>`
-                          )
-                        : html`<option>${fanMode ? labelForOption(fanMode) : "Auto"}</option>`}
-                    </select>
-                  </span>
-                </label>
+                ${hasFanControl
+                  ? html`
+                      <label class="option">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d=${mdiFan}></path>
+                        </svg>
+                        <span>
+                          <small>Fan</small>
+                          <select
+                            aria-label="Fan mode"
+                            ?disabled=${fanModes.length === 0 || this._controlPending}
+                            @change=${this._changeFan}
+                          >
+                            ${fanModes.length > 0
+                              ? fanModes.map(
+                                  (item) =>
+                                    html`<option
+                                      value=${item}
+                                      ?selected=${item === fanMode}
+                                    >
+                                      ${labelForOption(item)}
+                                    </option>`
+                                )
+                              : html`<option>${labelForOption(fanMode)}</option>`}
+                          </select>
+                        </span>
+                      </label>
+                    `
+                  : nothing}
               </div>
             </div>
 
-            <button
-              class="humidity"
-              type="button"
-              ?disabled=${!config.humidity_entity}
-              @click=${() => this._openMoreInfo(config.humidity_entity)}
-              aria-label="Open humidity details"
-              style="--humidity-progress: ${humidityProgress}"
-            >
-              <svg class="humidity-ring" viewBox="0 0 140 140" aria-hidden="true">
-                <circle class="ring-track" cx="70" cy="70" r="58"></circle>
-                <circle class="ring-value" cx="70" cy="70" r="58"></circle>
-              </svg>
-              <span class="humidity-content">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d=${mdiWaterPercent}></path>
-                </svg>
-                <span>${humidityStatus(humidity)}</span>
-                <strong>${formatNumber(humidity, this._locale)}%</strong>
-                <small>Indoor humidity</small>
-              </span>
-            </button>
+            ${hasHumidity
+              ? html`
+                  <button
+                    class="humidity"
+                    type="button"
+                    @click=${() => this._openMoreInfo(humidityEntityId)}
+                    aria-label="Open humidity details"
+                    style="--humidity-progress: ${humidityProgress}"
+                  >
+                    <svg class="humidity-ring" viewBox="0 0 140 140" aria-hidden="true">
+                      <circle class="ring-track" cx="70" cy="70" r="58"></circle>
+                      <circle class="ring-value" cx="70" cy="70" r="58"></circle>
+                    </svg>
+                    <span class="humidity-content">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d=${mdiWaterPercent}></path>
+                      </svg>
+                      <span>${humidityStatus(humidity)}</span>
+                      <strong>${formatNumber(humidity, this._locale)}%</strong>
+                      <small>Indoor humidity</small>
+                    </span>
+                  </button>
+                `
+              : nothing}
           </section>
 
           ${config.show_history === false
@@ -743,11 +801,16 @@ export class ClimateAirCard extends LitElement {
                     </div>
                     <div class="legend" aria-label="Chart legend">
                       <span><i class="temperature-key"></i>Temperature</span>
-                      <span><i class="humidity-key"></i>Humidity</span>
+                      ${hasHumidity
+                        ? html`<span><i class="humidity-key"></i>Humidity</span>`
+                        : nothing}
                     </div>
                   </div>
-                  ${this._renderChart(history, unit)}
-                  <div class="x-axis" aria-hidden="true">
+                  ${this._renderChart(history, unit, hasHumidity)}
+                  <div
+                    class="x-axis ${hasHumidity ? "" : "temperature-only"}"
+                    aria-hidden="true"
+                  >
                     ${[hours, hours - hours / 6, hours - (2 * hours) / 6, hours / 2, (2 * hours) / 6, hours / 6, 0].map(
                       (remaining, index) =>
                         html`<span>
@@ -765,32 +828,46 @@ export class ClimateAirCard extends LitElement {
                 </section>
               `}
 
-          <section class="sensors" aria-label="Indoor air quality">
-            ${this._sensorTile(
-              "co2",
-              "CO₂",
-              co2,
-              config.co2_entity,
-              mdiMoleculeCo2,
-              "ppm"
-            )}
-            ${this._sensorTile(
-              "pm25",
-              "PM2.5",
-              pm25,
-              config.pm25_entity,
-              mdiBlur,
-              "µg/m³"
-            )}
-            ${this._sensorTile(
-              "voc",
-              "VOC",
-              voc,
-              config.voc_entity,
-              mdiLeaf,
-              ""
-            )}
-          </section>
+          ${configuredSensorCount > 0
+            ? html`
+                <section
+                  class="sensors"
+                  aria-label="Indoor air quality"
+                  style="--sensor-count: ${configuredSensorCount}"
+                >
+                  ${config.co2_entity
+                    ? this._sensorTile(
+                        "co2",
+                        "CO₂",
+                        co2,
+                        config.co2_entity,
+                        mdiMoleculeCo2,
+                        "ppm"
+                      )
+                    : nothing}
+                  ${config.pm25_entity
+                    ? this._sensorTile(
+                        "pm25",
+                        "PM2.5",
+                        pm25,
+                        config.pm25_entity,
+                        mdiBlur,
+                        "µg/m³"
+                      )
+                    : nothing}
+                  ${config.voc_entity
+                    ? this._sensorTile(
+                        "voc",
+                        "VOC",
+                        voc,
+                        config.voc_entity,
+                        mdiLeaf,
+                        ""
+                      )
+                    : nothing}
+                </section>
+              `
+            : nothing}
         </div>
       </ha-card>
     `;

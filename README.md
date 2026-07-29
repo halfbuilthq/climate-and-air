@@ -32,8 +32,8 @@ show_history: true
 ```
 
 Only `entity` is required. If `humidity_entity` is omitted, the card uses the
-climate entity's `current_humidity` or `humidity` attribute when available.
-The three air-quality entities are optional.
+climate entity's `current_humidity` attribute when available. Humidity and each
+air-quality tile are hidden when they have no configured source.
 
 ## HACS installation
 

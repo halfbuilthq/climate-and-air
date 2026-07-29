@@ -159,10 +159,34 @@ export const cardStyles = css`
     );
   }
 
+  .hero.temperature-only {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .thermostat {
     min-width: 0;
     padding: clamp(22px, 5cqw, 32px);
     border-right: 1px solid var(--divider-color, #dfe6eb);
+  }
+
+  .hero.temperature-only .thermostat {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(24px, 7cqw, 56px);
+    align-items: start;
+    border-right: 0;
+  }
+
+  .hero.temperature-only .target-block {
+    margin-top: 0;
+  }
+
+  .hero.temperature-only .climate-options {
+    grid-column: 1 / -1;
+  }
+
+  .hero.temperature-only .thermostat.no-target .current-block {
+    grid-column: 1 / -1;
   }
 
   .current-block,
@@ -268,6 +292,14 @@ export const cardStyles = css`
     margin-top: 25px;
     padding-top: 18px;
     border-top: 1px solid var(--divider-color, #dfe6eb);
+  }
+
+  .climate-options.single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .climate-options.single .option:first-child {
+    border-right: 0;
   }
 
   .option {
@@ -465,6 +497,10 @@ export const cardStyles = css`
     align-items: stretch;
   }
 
+  .chart-layout.temperature-only {
+    grid-template-columns: 45px minmax(0, 1fr);
+  }
+
   .chart-wrap {
     position: relative;
     height: 150px;
@@ -643,6 +679,10 @@ export const cardStyles = css`
     font-size: 10px;
   }
 
+  .x-axis.temperature-only {
+    margin-right: 0;
+  }
+
   .x-axis span {
     text-align: center;
   }
@@ -663,7 +703,7 @@ export const cardStyles = css`
 
   .sensors {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--sensor-count, 3), minmax(0, 1fr));
     margin-top: 24px;
     padding-top: 22px;
     border-top: 1px solid var(--divider-color, #dfe6eb);
@@ -828,6 +868,15 @@ export const cardStyles = css`
       border-bottom: 1px solid var(--divider-color, #dfe6eb);
     }
 
+    .hero.temperature-only .thermostat {
+      display: block;
+      border-bottom: 0;
+    }
+
+    .hero.temperature-only .target-block {
+      margin-top: 23px;
+    }
+
     .humidity {
       min-height: 240px;
     }
@@ -847,9 +896,17 @@ export const cardStyles = css`
       gap: 5px;
     }
 
+    .chart-layout.temperature-only {
+      grid-template-columns: 38px minmax(0, 1fr);
+    }
+
     .x-axis {
       margin-right: 39px;
       margin-left: 43px;
+    }
+
+    .x-axis.temperature-only {
+      margin-right: 0;
     }
 
     .x-axis span:nth-child(even) {
