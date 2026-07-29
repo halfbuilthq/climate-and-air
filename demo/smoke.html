@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Climate & Air Card interaction smoke test</title>
+  </head>
+  <body>
+    <main class="stage">
+      <climate-air-card></climate-air-card>
+    </main>
+    <pre id="result">running</pre>
+    <script>
+      window.__climateAirSmokeErrors = [];
+      window.addEventListener("error", (event) => {
+        window.__climateAirSmokeErrors.push(event.message);
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        window.__climateAirSmokeErrors.push(String(event.reason));
+      });
+    </script>
+    <script type="module" src="/demo/smoke.ts"></script>
+  </body>
+</html>

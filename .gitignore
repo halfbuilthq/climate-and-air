@@ -1,0 +1,12 @@
+.DS_Store
+node_modules/
+dist/*
+!dist/climate-air-card.js
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+design-qa.md
+design-qa-*.png
+design-qa-comparison.html
