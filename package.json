@@ -1,6 +1,6 @@
 {
   "name": "climate-air-card",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A combined climate control and indoor air quality card for Home Assistant.",
   "license": "MIT",
   "repository": {
