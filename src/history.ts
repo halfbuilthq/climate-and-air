@@ -84,7 +84,7 @@ export async function fetchClimateHistory(
   const climate = seriesByEntity(response, climateEntityId);
   const humidity = humidityEntityId
     ? seriesByEntity(response, humidityEntityId)
-    : climate;
+    : [];
 
   return Array.from({ length: BUCKET_COUNT }, (_, index) => {
     const timestamp =
@@ -97,13 +97,9 @@ export async function fetchClimateHistory(
         timestamp,
         (state) => numericAttribute(state, "current_temperature")
       ),
-      humidity: valueAt(
-        humidity,
-        timestamp,
-        humidityEntityId
-          ? (state) => numericState(state)
-          : (state) => numericAttribute(state, "current_humidity")
-      )
+      humidity: humidityEntityId
+        ? valueAt(humidity, timestamp, (state) => numericState(state))
+        : undefined
     };
   });
 }

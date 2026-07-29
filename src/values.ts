@@ -42,13 +42,9 @@ export function targetTemperature(
 }
 
 export function currentHumidity(
-  climate: HassEntity | undefined,
-  humiditySensor?: HassEntity
+  humiditySensor: HassEntity | undefined
 ): number | undefined {
-  return (
-    numericState(humiditySensor) ??
-    numericAttribute(climate, "current_humidity")
-  );
+  return numericState(humiditySensor);
 }
 
 export function temperatureUnit(

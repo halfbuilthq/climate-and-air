@@ -591,12 +591,9 @@ export class ClimateAirCard extends LitElement {
     const voc = entity(this.hass, config.voc_entity);
     const current = currentTemperature(climate);
     const target = targetTemperature(climate);
-    const humidity = currentHumidity(climate, humiditySensor);
-    const hasHumidity =
-      Boolean(config.humidity_entity) ||
-      typeof climate?.attributes.current_humidity === "number";
+    const humidity = currentHumidity(humiditySensor);
+    const hasHumidity = Boolean(config.humidity_entity);
     const humidityProgress = clamp(humidity ?? 0, 0, 100);
-    const humidityEntityId = config.humidity_entity || config.entity;
     const unit = temperatureUnit(this.hass, climate);
     const title =
       config.title ||
@@ -767,7 +764,7 @@ export class ClimateAirCard extends LitElement {
                   <button
                     class="humidity"
                     type="button"
-                    @click=${() => this._openMoreInfo(humidityEntityId)}
+                    @click=${() => this._openMoreInfo(config.humidity_entity)}
                     aria-label="Open humidity details"
                     style="--humidity-progress: ${humidityProgress}"
                   >

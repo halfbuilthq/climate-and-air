@@ -20,7 +20,7 @@ const FIELD_LABELS: Record<string, string> = {
 const FIELD_HELPERS: Record<string, string> = {
   title: "Optional. The climate entity name is used when this is blank.",
   entity: "Required. Provides temperature, target, mode, fan and AC controls.",
-  humidity_entity: "Optional if the climate entity already reports current humidity.",
+  humidity_entity: "Optional humidity sensor. Humidity is hidden when this is blank.",
   co2_entity: "Optional indoor CO₂ sensor.",
   pm25_entity: "Optional PM2.5 concentration sensor.",
   voc_entity: "Optional VOC index, concentration or text sensor.",
