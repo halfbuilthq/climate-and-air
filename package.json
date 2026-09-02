@@ -1,7 +1,14 @@
 {
   "name": "climate-air-card",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A combined climate control and indoor air quality card for Home Assistant.",
+  "keywords": [
+    "air-quality",
+    "climate",
+    "hacs",
+    "home-assistant",
+    "lovelace"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,7 +21,7 @@
   "type": "module",
   "main": "dist/climate-air-card.js",
   "files": [
-    "dist",
+    "dist/climate-air-card.js",
     "README.md",
     "hacs.json"
   ],
@@ -34,6 +41,6 @@
     "vitest": "^3.2.4"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19"
   }
 }
