@@ -5,6 +5,14 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-09-02
+
+### Changed
+
+- Clear chart inspection when a touch gesture is cancelled by scrolling.
+- Added regression coverage for Home Assistant's current and legacy card
+  background theme variables.
+
 ## [0.1.2] - 2026-09-02
 
 ### Added
@@ -15,4 +23,3 @@ Semantic Versioning.
 ## [0.1.1] - 2026-07-29
 
 - Initial public release of the Climate & Air Card.
-

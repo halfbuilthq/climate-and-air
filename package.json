@@ -1,6 +1,6 @@
 {
   "name": "climate-air-card",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A combined climate control and indoor air quality card for Home Assistant.",
   "keywords": [
     "air-quality",

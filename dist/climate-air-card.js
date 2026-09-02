@@ -637,7 +637,7 @@ const Rt = ["unknown", "unavailable", "none", ""];
 function P(r, t) {
   return t ? r?.states[t] : void 0;
 }
-function zt(r) {
+function It(r) {
   if (!r || Rt.includes(r.state.toLowerCase()))
     return;
   const t = Number(r.state);
@@ -654,7 +654,7 @@ function At(r) {
   return j(r, "temperature") ?? j(r, "target_temp_high") ?? j(r, "target_temp_low");
 }
 function ke(r) {
-  return zt(r);
+  return It(r);
 }
 function Ee(r, t) {
   return t?.attributes.temperature_unit ?? r?.config?.unit_system?.temperature ?? "°C";
@@ -716,7 +716,7 @@ async function He(r, t, e, i, o = /* @__PURE__ */ new Date()) {
         y,
         (g) => j(g, "current_temperature")
       ),
-      humidity: e ? Mt(f, y, (g) => zt(g)) : void 0
+      humidity: e ? Mt(f, y, (g) => It(g)) : void 0
     };
   });
 }
@@ -1808,7 +1808,10 @@ const J = class J extends D {
     o !== this._activeChartIndex && (this._activeChartIndex = o);
   }
   _leaveChart(t) {
-    t.pointerType === "mouse" && (this._activeChartIndex = void 0, this._chartPointer = void 0);
+    t.pointerType === "mouse" && this._clearChartInspection();
+  }
+  _clearChartInspection() {
+    this._activeChartIndex = void 0, this._chartPointer = void 0;
   }
   _navigateChart(t, e) {
     if (this._chartPointer = void 0, t.key === "Escape") {
@@ -1831,7 +1834,7 @@ const J = class J extends D {
         f(x),
         (h - p.humidity) / d * M
       ]
-    ).filter((p) => p !== void 0) : [], y = this._activeChartIndex === void 0 ? void 0 : T(this._activeChartIndex, 0, t.length - 1), g = y === void 0 ? void 0 : t[y], A = y === void 0 ? void 0 : y / Math.max(1, t.length - 1) * V, w = y === void 0 ? void 0 : we(y, t.length), R = g?.temperature === void 0 ? void 0 : (a - g.temperature) / l * M, z = !i || g?.humidity === void 0 ? void 0 : (h - g.humidity) / d * M, I = this._chartPointer?.placement ?? (w !== void 0 && w > 64 ? "place-left" : "place-right"), et = this._chartPointer ? `left: ${this._chartPointer.x}px; top: ${this._chartPointer.top}px` : `left: ${w ?? 0}%`, b = g ? new Intl.DateTimeFormat(this._locale, {
+    ).filter((p) => p !== void 0) : [], y = this._activeChartIndex === void 0 ? void 0 : T(this._activeChartIndex, 0, t.length - 1), g = y === void 0 ? void 0 : t[y], A = y === void 0 ? void 0 : y / Math.max(1, t.length - 1) * V, w = y === void 0 ? void 0 : we(y, t.length), R = g?.temperature === void 0 ? void 0 : (a - g.temperature) / l * M, I = !i || g?.humidity === void 0 ? void 0 : (h - g.humidity) / d * M, z = this._chartPointer?.placement ?? (w !== void 0 && w > 64 ? "place-left" : "place-right"), et = this._chartPointer ? `left: ${this._chartPointer.x}px; top: ${this._chartPointer.top}px` : `left: ${w ?? 0}%`, b = g ? new Intl.DateTimeFormat(this._locale, {
       hour: "numeric",
       minute: "2-digit"
     }).format(g.timestamp) : "";
@@ -1850,10 +1853,9 @@ const J = class J extends D {
           @pointerdown=${(p) => this._inspectChart(p, t.length)}
           @pointermove=${(p) => this._inspectChart(p, t.length)}
           @pointerleave=${this._leaveChart}
+          @pointercancel=${this._clearChartInspection}
           @keydown=${(p) => this._navigateChart(p, t.length)}
-          @blur=${() => {
-      this._activeChartIndex = void 0, this._chartPointer = void 0;
-    }}
+          @blur=${this._clearChartInspection}
         >
           <svg
             viewBox="0 0 ${V} ${M}"
@@ -1893,11 +1895,11 @@ const J = class J extends D {
                           r="5"
                         ></circle>
                       `}
-                  ${z === void 0 ? c : C`
+                  ${I === void 0 ? c : C`
                         <circle
                           class="inspection-dot humidity-series"
                           cx=${A}
-                          cy=${z}
+                          cy=${I}
                           r="5"
                         ></circle>
                       `}
@@ -1905,7 +1907,7 @@ const J = class J extends D {
           </svg>
           ${g && w !== void 0 ? m`
                 <div
-                  class="chart-tooltip ${I}"
+                  class="chart-tooltip ${z}"
                   style=${et}
                   aria-live="polite"
                 >
@@ -1964,13 +1966,13 @@ const J = class J extends D {
   render() {
     const t = this._config;
     if (!t) return c;
-    const e = P(this.hass, t.entity), i = P(this.hass, t.humidity_entity), o = P(this.hass, t.co2_entity), s = P(this.hass, t.pm25_entity), n = P(this.hass, t.voc_entity), a = Me(e), l = At(e), u = ke(i), h = !!t.humidity_entity, d = T(u ?? 0, 0, 100), f = Ee(this.hass, e), v = t.title || e?.attributes.friendly_name || "Climate & Air", _ = Oe(e), y = e?.state ?? "off", g = Et(e?.attributes.hvac_modes), A = typeof e?.attributes.fan_mode == "string" ? e.attributes.fan_mode : "", w = Et(e?.attributes.fan_modes), R = w.length > 0 || A.length > 0, z = l !== void 0, I = [
+    const e = P(this.hass, t.entity), i = P(this.hass, t.humidity_entity), o = P(this.hass, t.co2_entity), s = P(this.hass, t.pm25_entity), n = P(this.hass, t.voc_entity), a = Me(e), l = At(e), u = ke(i), h = !!t.humidity_entity, d = T(u ?? 0, 0, 100), f = Ee(this.hass, e), v = t.title || e?.attributes.friendly_name || "Climate & Air", _ = Oe(e), y = e?.state ?? "off", g = Et(e?.attributes.hvac_modes), A = typeof e?.attributes.fan_mode == "string" ? e.attributes.fan_mode : "", w = Et(e?.attributes.fan_modes), R = w.length > 0 || A.length > 0, I = l !== void 0, z = [
       t.co2_entity,
       t.pm25_entity,
       t.voc_entity
-    ].filter(Boolean).length, et = h || I > 0, b = T(t.history_hours ?? 6, 1, 24), p = this._history.some(
+    ].filter(Boolean).length, et = h || z > 0, b = T(t.history_hours ?? 6, 1, 24), p = this._history.some(
       ($) => $.temperature !== void 0 || $.humidity !== void 0
-    ) ? this._history : Ne(a, u, b), x = X(y), It = y === "dry" ? "Dry mode reducing humidity" : y === "cool" ? "Cooling toward the target temperature" : y === "heat" ? "Heating toward the target temperature" : y === "fan_only" ? "Air circulation is running" : y === "off" ? "Climate control is off" : `${x} mode balancing comfort`;
+    ) ? this._history : Ne(a, u, b), x = X(y), zt = y === "dry" ? "Dry mode reducing humidity" : y === "cool" ? "Cooling toward the target temperature" : y === "heat" ? "Heating toward the target temperature" : y === "fan_only" ? "Air circulation is running" : y === "off" ? "Climate control is off" : `${x} mode balancing comfort`;
     return m`
       <ha-card>
         <div class="card">
@@ -1998,7 +2000,7 @@ const J = class J extends D {
           </header>
 
           <section class="hero ${h ? "" : "temperature-only"}">
-            <div class="thermostat ${z ? "" : "no-target"}">
+            <div class="thermostat ${I ? "" : "no-target"}">
               <div class="current-block">
                 <span class="eyebrow">Current</span>
                 <strong class="current-temperature">
@@ -2007,7 +2009,7 @@ const J = class J extends D {
                 </strong>
               </div>
 
-              ${z ? m`
+              ${I ? m`
                     <div class="target-block">
                       <span class="eyebrow">Target</span>
                       <div class="target-controls">
@@ -2115,7 +2117,7 @@ const J = class J extends D {
                       <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d=${Bt}></path>
                       </svg>
-                      <span>${It}</span>
+                      <span>${zt}</span>
                     </div>
                     <div class="legend" aria-label="Chart legend">
                       <span><i class="temperature-key"></i>Temperature</span>
@@ -2137,11 +2139,11 @@ const J = class J extends D {
                 </section>
               `}
 
-          ${I > 0 ? m`
+          ${z > 0 ? m`
                 <section
                   class="sensors"
                   aria-label="Indoor air quality"
-                  style="--sensor-count: ${I}"
+                  style="--sensor-count: ${z}"
                 >
                   ${t.co2_entity ? this._sensorTile(
       "co2",
