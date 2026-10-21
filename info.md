@@ -3,6 +3,9 @@
 A Home Assistant dashboard card combining climate controls, comfort history,
 humidity, and optional indoor air-quality sensors for one zone.
 
+Available directly in the default HACS catalogue. Search for **Climate & Air Card**
+in HACS; no custom repository is needed.
+
 ![Climate & Air Card preview](docs/climate-air-card-preview.png)
 
 ## Highlights

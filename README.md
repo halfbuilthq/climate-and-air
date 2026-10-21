@@ -1,5 +1,7 @@
 # Climate & Air Card for Home Assistant
 
+[![HACS Default](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/default)
+
 A combined climate control, comfort trend and indoor air-quality card for
 Home Assistant dashboards.
 
@@ -15,7 +17,7 @@ Home Assistant dashboards.
 - Optional CO₂, PM2.5 and VOC readings
 - Native Home Assistant visual configuration
 - Responsive light and dark themes
-- HACS-compatible packaging
+- Available in the default HACS catalogue
 
 ## Configuration
 
@@ -36,13 +38,17 @@ configured. Each air-quality tile is likewise hidden when its entity is blank.
 
 ## HACS installation
 
-Until the card is included in the default HACS catalogue:
+The card is available in the default HACS catalogue; no custom repository is needed.
 
-1. Open HACS and select **Custom repositories**.
-2. Add `https://github.com/halfbuilthq/climate-and-air` as a **Dashboard**
-   repository.
-3. Install **Climate & Air Card** and reload Home Assistant.
-4. Add the card from Home Assistant's card picker.
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=halfbuilthq&repository=climate-and-air&category=plugin)
+
+1. Select the button above, or open **HACS** in Home Assistant.
+2. Search for **Climate & Air Card**.
+3. Open the card and select **Download**.
+4. Refresh your browser, then add **Climate & Air Card** from the dashboard card picker.
+
+For updates, download the latest release when offered in HACS and refresh your
+dashboard. HACS may take time to discover a newly published release.
 
 ## Development
 
