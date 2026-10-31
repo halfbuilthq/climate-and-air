@@ -304,11 +304,11 @@ class Z {
     return i.innerHTML = t, i;
   }
 }
-function L(r, t, e = r, i) {
+function z(r, t, e = r, i) {
   if (t === U) return t;
   let o = i !== void 0 ? e._$Co?.[i] : e._$Cl;
   const s = W(t) ? void 0 : t._$litDirective$;
-  return o?.constructor !== s && (o?._$AO?.(!1), s === void 0 ? o = void 0 : (o = new s(r), o._$AT(r, e, i)), i !== void 0 ? (e._$Co ??= [])[i] = o : e._$Cl = o), o !== void 0 && (t = L(r, o._$AS(r, t.values), o, i)), t;
+  return o?.constructor !== s && (o?._$AO?.(!1), s === void 0 ? o = void 0 : (o = new s(r), o._$AT(r, e, i)), i !== void 0 ? (e._$Co ??= [])[i] = o : e._$Cl = o), o !== void 0 && (t = z(r, o._$AS(r, t.values), o, i)), t;
 }
 class de {
   constructor(t, e) {
@@ -357,7 +357,7 @@ class K {
     return this._$AB;
   }
   _$AI(t, e = this) {
-    t = L(this, t, e), W(t) ? t === c || t == null || t === "" ? (this._$AH !== c && this._$AR(), this._$AH = c) : t !== this._$AH && t !== U && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : le(t) ? this.k(t) : this._(t);
+    t = z(this, t, e), W(t) ? t === c || t == null || t === "" ? (this._$AH !== c && this._$AR(), this._$AH = c) : t !== this._$AH && t !== U && this._(t) : t._$litType$ !== void 0 ? this.$(t) : t.nodeType !== void 0 ? this.T(t) : le(t) ? this.k(t) : this._(t);
   }
   O(t) {
     return this._$AA.parentNode.insertBefore(t, this._$AB);
@@ -410,11 +410,11 @@ class tt {
   _$AI(t, e = this, i, o) {
     const s = this.strings;
     let n = !1;
-    if (s === void 0) t = L(this, t, e, 0), n = !W(t) || t !== this._$AH && t !== U, n && (this._$AH = t);
+    if (s === void 0) t = z(this, t, e, 0), n = !W(t) || t !== this._$AH && t !== U, n && (this._$AH = t);
     else {
       const a = t;
       let l, u;
-      for (t = s[0], l = 0; l < s.length - 1; l++) u = L(this, a[i + l], e, l), u === U && (u = this._$AH[l]), n ||= !W(u) || u !== this._$AH[l], u === c ? t = c : t !== c && (t += (u ?? "") + s[l + 1]), this._$AH[l] = u;
+      for (t = s[0], l = 0; l < s.length - 1; l++) u = z(this, a[i + l], e, l), u === U && (u = this._$AH[l]), n ||= !W(u) || u !== this._$AH[l], u === c ? t = c : t !== c && (t += (u ?? "") + s[l + 1]), this._$AH[l] = u;
     }
     n && !o && this.j(t);
   }
@@ -443,7 +443,7 @@ class ue extends tt {
     super(t, e, i, o, s), this.type = 5;
   }
   _$AI(t, e = this) {
-    if ((t = L(this, t, e, 0) ?? c) === U) return;
+    if ((t = z(this, t, e, 0) ?? c) === U) return;
     const i = this._$AH, o = t === c && i !== c || t.capture !== i.capture || t.once !== i.once || t.passive !== i.passive, s = t !== c && (i === c || o);
     o && this.element.removeEventListener(this.name, this, i), s && this.element.addEventListener(this.name, this, t), this._$AH = t;
   }
@@ -459,7 +459,7 @@ class me {
     return this._$AM._$AU;
   }
   _$AI(t) {
-    L(this, t);
+    z(this, t);
   }
 }
 const ge = lt.litHtmlPolyfillSupport;
@@ -600,7 +600,7 @@ function Ut(r) {
   if (r.history_hours !== void 0 && (r.history_hours < 1 || r.history_hours > 24))
     throw new Error("Trend period must be between 1 and 24 hours.");
 }
-function Lt(r) {
+function zt(r) {
   return {
     ...xe,
     ...r,
@@ -609,7 +609,7 @@ function Lt(r) {
 }
 function be(r) {
   const e = Object.values(r?.states ?? {}).find((i) => i.entity_id.startsWith("climate."));
-  return Lt({
+  return zt({
     type: "custom:climate-air-card",
     entity: e?.entity_id ?? ""
   });
@@ -633,12 +633,12 @@ function Ce(r, t, e, i, o = 154, s = 72, n = 14) {
     placement: a + n + o > e ? "place-left" : "place-right"
   };
 }
-const Rt = ["unknown", "unavailable", "none", ""];
+const Lt = ["unknown", "unavailable", "none", ""];
 function P(r, t) {
   return t ? r?.states[t] : void 0;
 }
-function It(r) {
-  if (!r || Rt.includes(r.state.toLowerCase()))
+function Rt(r) {
+  if (!r || Lt.includes(r.state.toLowerCase()))
     return;
   const t = Number(r.state);
   return Number.isFinite(t) ? t : void 0;
@@ -654,7 +654,7 @@ function At(r) {
   return j(r, "temperature") ?? j(r, "target_temp_high") ?? j(r, "target_temp_low");
 }
 function ke(r) {
-  return It(r);
+  return Rt(r);
 }
 function Ee(r, t) {
   return t?.attributes.temperature_unit ?? r?.config?.unit_system?.temperature ?? "°C";
@@ -663,7 +663,7 @@ function O(r, t, e = 0) {
   return r === void 0 || !Number.isFinite(r) ? "—" : new Intl.NumberFormat(t, { maximumFractionDigits: e }).format(r);
 }
 function Se(r, t, e = "") {
-  if (!r || Rt.includes(r.state.toLowerCase())) return "—";
+  if (!r || Lt.includes(r.state.toLowerCase())) return "—";
   const i = Number(r.state), o = r.attributes.unit_of_measurement ?? e;
   if (Number.isFinite(i)) {
     const s = Math.abs(i) < 10 ? 1 : 0;
@@ -716,7 +716,7 @@ async function He(r, t, e, i, o = /* @__PURE__ */ new Date()) {
         y,
         (g) => j(g, "current_temperature")
       ),
-      humidity: e ? Mt(f, y, (g) => It(g)) : void 0
+      humidity: e ? Mt(f, y, (g) => Rt(g)) : void 0
     };
   });
 }
@@ -1487,6 +1487,7 @@ const Pe = Gt`
 
   .sensor-copy {
     min-width: 0;
+    max-width: 100%;
   }
 
   .sensor-label {
@@ -1506,6 +1507,11 @@ const Pe = Gt`
     letter-spacing: -0.5px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .sensor strong.voc {
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .sensor strong.voc.good {
@@ -1568,6 +1574,36 @@ const Pe = Gt`
     }
   }
 
+  @container (max-width: 560px) {
+    .climate-options {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .option,
+    .option:first-child,
+    .option:last-child {
+      padding: 0;
+      border-right: 0;
+    }
+  }
+
+  @container (min-width: 441px) and (max-width: 520px) {
+    .humidity-content > svg {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 4px;
+    }
+
+    .humidity-content > span {
+      font-size: 12px;
+    }
+
+    .humidity-content strong {
+      font-size: 32px;
+    }
+  }
+
   @container (max-width: 440px) {
     .header {
       align-items: flex-start;
@@ -1580,7 +1616,7 @@ const Pe = Gt`
     }
 
     .hero {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .thermostat {
@@ -1602,7 +1638,7 @@ const Pe = Gt`
     }
 
     .humidity-ring {
-      width: 200px;
+      width: min(200px, 100%);
     }
 
     .history-heading {
@@ -1651,6 +1687,44 @@ const Pe = Gt`
 
     .sensor:last-child {
       border-bottom: 0;
+    }
+  }
+
+  @container (max-width: 280px) {
+    .header {
+      flex-wrap: wrap;
+    }
+
+    .title-group {
+      max-width: 100%;
+    }
+
+    .thermostat,
+    .humidity {
+      padding: 18px 12px;
+    }
+
+    .target-controls {
+      grid-template-columns: 32px minmax(0, 1fr) 32px;
+      gap: 5px;
+    }
+
+    .temperature-button {
+      width: 32px;
+      height: 36px;
+    }
+
+    .current-temperature {
+      font-size: 42px;
+    }
+
+    .target-temperature {
+      font-size: 28px;
+      letter-spacing: -1.2px;
+    }
+
+    .legend {
+      flex-wrap: wrap;
     }
   }
 `, V = 560, M = 150, Te = 600 * 1e3;
@@ -1715,7 +1789,7 @@ const J = class J extends D {
     return be(t);
   }
   setConfig(t) {
-    Ut(t), this._config = Lt({ ...t });
+    Ut(t), this._config = zt({ ...t });
   }
   getCardSize() {
     const t = this._config;
@@ -1834,7 +1908,7 @@ const J = class J extends D {
         f(x),
         (h - p.humidity) / d * M
       ]
-    ).filter((p) => p !== void 0) : [], y = this._activeChartIndex === void 0 ? void 0 : T(this._activeChartIndex, 0, t.length - 1), g = y === void 0 ? void 0 : t[y], A = y === void 0 ? void 0 : y / Math.max(1, t.length - 1) * V, w = y === void 0 ? void 0 : we(y, t.length), R = g?.temperature === void 0 ? void 0 : (a - g.temperature) / l * M, I = !i || g?.humidity === void 0 ? void 0 : (h - g.humidity) / d * M, z = this._chartPointer?.placement ?? (w !== void 0 && w > 64 ? "place-left" : "place-right"), et = this._chartPointer ? `left: ${this._chartPointer.x}px; top: ${this._chartPointer.top}px` : `left: ${w ?? 0}%`, b = g ? new Intl.DateTimeFormat(this._locale, {
+    ).filter((p) => p !== void 0) : [], y = this._activeChartIndex === void 0 ? void 0 : T(this._activeChartIndex, 0, t.length - 1), g = y === void 0 ? void 0 : t[y], A = y === void 0 ? void 0 : y / Math.max(1, t.length - 1) * V, w = y === void 0 ? void 0 : we(y, t.length), L = g?.temperature === void 0 ? void 0 : (a - g.temperature) / l * M, R = !i || g?.humidity === void 0 ? void 0 : (h - g.humidity) / d * M, I = this._chartPointer?.placement ?? (w !== void 0 && w > 64 ? "place-left" : "place-right"), et = this._chartPointer ? `left: ${this._chartPointer.x}px; top: ${this._chartPointer.top}px` : `left: ${w ?? 0}%`, b = g ? new Intl.DateTimeFormat(this._locale, {
       hour: "numeric",
       minute: "2-digit"
     }).format(g.timestamp) : "";
@@ -1887,19 +1961,19 @@ const J = class J extends D {
                     x2=${A}
                     y2=${M}
                   ></line>
-                  ${R === void 0 ? c : C`
+                  ${L === void 0 ? c : C`
                         <circle
                           class="inspection-dot temperature-series"
                           cx=${A}
-                          cy=${R}
+                          cy=${L}
                           r="5"
                         ></circle>
                       `}
-                  ${I === void 0 ? c : C`
+                  ${R === void 0 ? c : C`
                         <circle
                           class="inspection-dot humidity-series"
                           cx=${A}
-                          cy=${I}
+                          cy=${R}
                           r="5"
                         ></circle>
                       `}
@@ -1907,7 +1981,7 @@ const J = class J extends D {
           </svg>
           ${g && w !== void 0 ? m`
                 <div
-                  class="chart-tooltip ${z}"
+                  class="chart-tooltip ${I}"
                   style=${et}
                   aria-live="polite"
                 >
@@ -1966,13 +2040,13 @@ const J = class J extends D {
   render() {
     const t = this._config;
     if (!t) return c;
-    const e = P(this.hass, t.entity), i = P(this.hass, t.humidity_entity), o = P(this.hass, t.co2_entity), s = P(this.hass, t.pm25_entity), n = P(this.hass, t.voc_entity), a = Me(e), l = At(e), u = ke(i), h = !!t.humidity_entity, d = T(u ?? 0, 0, 100), f = Ee(this.hass, e), v = t.title || e?.attributes.friendly_name || "Climate & Air", _ = Oe(e), y = e?.state ?? "off", g = Et(e?.attributes.hvac_modes), A = typeof e?.attributes.fan_mode == "string" ? e.attributes.fan_mode : "", w = Et(e?.attributes.fan_modes), R = w.length > 0 || A.length > 0, I = l !== void 0, z = [
+    const e = P(this.hass, t.entity), i = P(this.hass, t.humidity_entity), o = P(this.hass, t.co2_entity), s = P(this.hass, t.pm25_entity), n = P(this.hass, t.voc_entity), a = Me(e), l = At(e), u = ke(i), h = !!t.humidity_entity, d = T(u ?? 0, 0, 100), f = Ee(this.hass, e), v = t.title || e?.attributes.friendly_name || "Climate & Air", _ = Oe(e), y = e?.state ?? "off", g = Et(e?.attributes.hvac_modes), A = typeof e?.attributes.fan_mode == "string" ? e.attributes.fan_mode : "", w = Et(e?.attributes.fan_modes), L = w.length > 0 || A.length > 0, R = l !== void 0, I = [
       t.co2_entity,
       t.pm25_entity,
       t.voc_entity
-    ].filter(Boolean).length, et = h || z > 0, b = T(t.history_hours ?? 6, 1, 24), p = this._history.some(
+    ].filter(Boolean).length, et = h || I > 0, b = T(t.history_hours ?? 6, 1, 24), p = this._history.some(
       ($) => $.temperature !== void 0 || $.humidity !== void 0
-    ) ? this._history : Ne(a, u, b), x = X(y), zt = y === "dry" ? "Dry mode reducing humidity" : y === "cool" ? "Cooling toward the target temperature" : y === "heat" ? "Heating toward the target temperature" : y === "fan_only" ? "Air circulation is running" : y === "off" ? "Climate control is off" : `${x} mode balancing comfort`;
+    ) ? this._history : Ne(a, u, b), x = X(y), It = y === "dry" ? "Dry mode reducing humidity" : y === "cool" ? "Cooling toward the target temperature" : y === "heat" ? "Heating toward the target temperature" : y === "fan_only" ? "Air circulation is running" : y === "off" ? "Climate control is off" : `${x} mode balancing comfort`;
     return m`
       <ha-card>
         <div class="card">
@@ -2000,7 +2074,7 @@ const J = class J extends D {
           </header>
 
           <section class="hero ${h ? "" : "temperature-only"}">
-            <div class="thermostat ${I ? "" : "no-target"}">
+            <div class="thermostat ${R ? "" : "no-target"}">
               <div class="current-block">
                 <span class="eyebrow">Current</span>
                 <strong class="current-temperature">
@@ -2009,7 +2083,7 @@ const J = class J extends D {
                 </strong>
               </div>
 
-              ${I ? m`
+              ${R ? m`
                     <div class="target-block">
                       <span class="eyebrow">Target</span>
                       <div class="target-controls">
@@ -2039,7 +2113,7 @@ const J = class J extends D {
                     </div>
                   ` : c}
 
-              <div class="climate-options ${R ? "" : "single"}">
+              <div class="climate-options ${L ? "" : "single"}">
                 <label class="option">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d=${ht}></path>
@@ -2059,7 +2133,7 @@ const J = class J extends D {
                     </select>
                   </span>
                 </label>
-                ${R ? m`
+                ${L ? m`
                       <label class="option">
                         <svg viewBox="0 0 24 24" aria-hidden="true">
                           <path d=${jt}></path>
@@ -2117,7 +2191,7 @@ const J = class J extends D {
                       <svg viewBox="0 0 24 24" aria-hidden="true">
                         <path d=${Bt}></path>
                       </svg>
-                      <span>${zt}</span>
+                      <span>${It}</span>
                     </div>
                     <div class="legend" aria-label="Chart legend">
                       <span><i class="temperature-key"></i>Temperature</span>
@@ -2139,11 +2213,11 @@ const J = class J extends D {
                 </section>
               `}
 
-          ${z > 0 ? m`
+          ${I > 0 ? m`
                 <section
                   class="sensors"
                   aria-label="Indoor air quality"
-                  style="--sensor-count: ${z}"
+                  style="--sensor-count: ${I}"
                 >
                   ${t.co2_entity ? this._sensorTile(
       "co2",

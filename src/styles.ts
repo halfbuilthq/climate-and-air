@@ -767,6 +767,7 @@ export const cardStyles = css`
 
   .sensor-copy {
     min-width: 0;
+    max-width: 100%;
   }
 
   .sensor-label {
@@ -786,6 +787,11 @@ export const cardStyles = css`
     letter-spacing: -0.5px;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  .sensor strong.voc {
+    overflow-wrap: anywhere;
+    white-space: normal;
   }
 
   .sensor strong.voc.good {
@@ -848,6 +854,36 @@ export const cardStyles = css`
     }
   }
 
+  @container (max-width: 560px) {
+    .climate-options {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .option,
+    .option:first-child,
+    .option:last-child {
+      padding: 0;
+      border-right: 0;
+    }
+  }
+
+  @container (min-width: 441px) and (max-width: 520px) {
+    .humidity-content > svg {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 4px;
+    }
+
+    .humidity-content > span {
+      font-size: 12px;
+    }
+
+    .humidity-content strong {
+      font-size: 32px;
+    }
+  }
+
   @container (max-width: 440px) {
     .header {
       align-items: flex-start;
@@ -860,7 +896,7 @@ export const cardStyles = css`
     }
 
     .hero {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .thermostat {
@@ -882,7 +918,7 @@ export const cardStyles = css`
     }
 
     .humidity-ring {
-      width: 200px;
+      width: min(200px, 100%);
     }
 
     .history-heading {
@@ -931,6 +967,44 @@ export const cardStyles = css`
 
     .sensor:last-child {
       border-bottom: 0;
+    }
+  }
+
+  @container (max-width: 280px) {
+    .header {
+      flex-wrap: wrap;
+    }
+
+    .title-group {
+      max-width: 100%;
+    }
+
+    .thermostat,
+    .humidity {
+      padding: 18px 12px;
+    }
+
+    .target-controls {
+      grid-template-columns: 32px minmax(0, 1fr) 32px;
+      gap: 5px;
+    }
+
+    .temperature-button {
+      width: 32px;
+      height: 36px;
+    }
+
+    .current-temperature {
+      font-size: 42px;
+    }
+
+    .target-temperature {
+      font-size: 28px;
+      letter-spacing: -1.2px;
+    }
+
+    .legend {
+      flex-wrap: wrap;
     }
   }
 `;
