@@ -1,6 +1,6 @@
 {
   "name": "climate-air-card",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Climate control, comfort history and indoor air quality for Home Assistant, available in HACS.",
   "keywords": [
     "air-quality",

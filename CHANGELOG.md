@@ -5,6 +5,13 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-11-01
+
+### Fixed
+
+- Keep long air-quality descriptions inside their sensor tiles and wrap VOC text.
+- Stack compact mode and fan controls, keep humidity content readable, and fit target controls and the humidity ring in narrow cards.
+
 ## [0.1.3] - 2026-09-02
 
 ### Changed
